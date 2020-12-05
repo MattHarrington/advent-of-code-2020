@@ -1,4 +1,4 @@
-configure_file(sample_input.txt sample_input.txt COPYONLY)
+configure_file(day1_sample_input.txt day1_sample_input.txt COPYONLY)
 configure_file(day1_input.txt day1_input.txt COPYONLY)
 
 add_executable(day1 app.cpp)
