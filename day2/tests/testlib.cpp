@@ -4,7 +4,8 @@
 
 #include "lib.hpp"
 
-TEST_CASE("Test input file length") {
+TEST_CASE("Test input file length")
+{
     const auto puzzle_input{ read_input("day2_input.txt") };
     CHECK(puzzle_input.size() == 1000);
 }

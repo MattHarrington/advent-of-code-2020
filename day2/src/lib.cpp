@@ -16,7 +16,7 @@ std::vector<password_with_policy> read_input(const std::string& filename)
     while (getline(in, line)) {
         std::smatch sm;
         std::regex_match(line, sm, r);
-        password_policy policy{ std::stoi(sm[1]), std::stoi(sm[2]), sm[3].str().front() };
+        password_policy policy{ std::stoi(sm[1].str()), std::stoi(sm[2].str()), sm[3].str().front() };
         input.emplace_back(password_with_policy{ sm[4], policy });
     }
     return input;
