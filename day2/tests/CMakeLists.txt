@@ -14,5 +14,5 @@ add_executable(day2-tests testlib.cpp)
 # I'm using C++17 in the test
 target_compile_features(day2-tests PRIVATE cxx_std_17)
 
-# Should be linked to the main library, as well as GTest
+# Should be linked to the main library, as well as Doctest
 target_link_libraries(day2-tests PRIVATE day2-core doctest::doctest)

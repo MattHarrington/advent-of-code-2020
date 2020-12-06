@@ -24,7 +24,7 @@ int part1(const std::vector<int>& input)
             }
         }
     }
-    return -1;
+    return -1; // No solution found
 }
 
 int part2(const std::vector<int>& input)
@@ -38,5 +38,5 @@ int part2(const std::vector<int>& input)
             }
         }
     }
-    return -1;
+    return -1; // No solution found
 }

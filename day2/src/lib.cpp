@@ -37,8 +37,8 @@ size_t part2(const std::vector<password_with_policy>& passwords)
     auto password_is_valid{ [](const password_with_policy& p)
     {
             auto acc{0};
-            if (p.password.at(p.policy.minimum - 1) == p.policy.letter) ++acc;
-            if (p.password.at(p.policy.maximum - 1) == p.policy.letter) ++acc;
+            if (p.password.at(p.policy.minimum - 1ULL) == p.policy.letter) ++acc;
+            if (p.password.at(p.policy.maximum - 1ULL) == p.policy.letter) ++acc;
             return acc == 1;
     } };
     return std::count_if(std::begin(passwords), std::end(passwords), password_is_valid);

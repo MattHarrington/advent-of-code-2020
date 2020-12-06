@@ -1,6 +1,12 @@
 find_package(GTest CONFIG REQUIRED)
 
-configure_file(../apps/day1_input.txt day1_input.txt COPYONLY)
+IF (WIN32)
+    configure_file(../apps/day1_sample_input.txt day1_sample_input.txt NEWLINE_STYLE WIN32)
+    configure_file(../apps/day1_input.txt day1_input.txt NEWLINE_STYLE WIN32)
+ELSE()
+    configure_file(../apps/day1_sample_input.txt day1_sample_input.txt NEWLINE_STYLE UNIX)
+    configure_file(../apps/day1_input.txt day1_input.txt NEWLINE_STYLE UNIX)
+ENDIF()
 
 # Tests need to be added as executables first
 add_executable(day1-tests testlib.cpp)
