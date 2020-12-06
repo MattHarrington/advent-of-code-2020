@@ -1,5 +1,4 @@
 #include <numeric>
-#include <vector>
 #include <fmt/core.h>
 
 #include "lib.hpp"

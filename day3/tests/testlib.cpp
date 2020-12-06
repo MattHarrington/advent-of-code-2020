@@ -43,7 +43,7 @@ TEST_CASE("Sample terrain part 2 answer should be 336")
     CHECK(part2_answer == 336);
 }
 
-TEST_CASE("Part 2 answer should be 6'419'669'520 ")
+TEST_CASE("Part 2 answer should be 6'419'669'520")
 {
     const auto puzzle_input{ read_input("day3_input.txt") };
     std::vector<size_t> trees_hit;
