@@ -8,7 +8,7 @@
 
 std::vector<int> read_input(const std::string& filename)
 {
-    std::fstream in{filename};
+    std::fstream in{ filename };
     if (!in.is_open()) throw std::runtime_error("Could not open file");
     std::string line;
     std::vector<int> input;
@@ -38,4 +38,17 @@ int part1(std::vector<int> adapters)
     ++joltage_differences[3]; // For the built-in adapter in the device
 
     return joltage_differences[1] * joltage_differences[3];
+}
+
+long long part2(std::vector<int> adapters)
+{
+    // Credit: https://github.com/viliampucik/adventofcode/blob/master/2020/10.py
+    std::sort(adapters.begin(), adapters.end());
+    std::unordered_map<long long, long long> counts;
+    counts[0LL] = 1LL;
+    for (const auto adapter : adapters)
+    {
+        counts[adapter] = counts[adapter - 3] + counts[adapter - 2] + counts[adapter - 1];
+    }
+    return counts[adapters.back()];
 }
