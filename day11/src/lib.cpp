@@ -1,4 +1,5 @@
 #include <fstream>
+#include <functional>
 #include <stdexcept>
 #include <sstream>
 
@@ -18,7 +19,7 @@ seating_chart read_input(const std::string& filename)
     return input;
 }
 
-bool has_adjacent_unoccupied_seats(const seating_chart& seating_chart, size_t x, size_t y)
+bool has_adjacent_occupied_seats(const seating_chart& seating_chart, const size_t x, const size_t y)
 {
     if (x > 0 && y > 0 && seating_chart[y - 1][x - 1] == '#') return true;
     if (y > 0 && seating_chart[y - 1][x] == '#') return true;
@@ -32,7 +33,78 @@ bool has_adjacent_unoccupied_seats(const seating_chart& seating_chart, size_t x,
     else return false;
 }
 
-bool has_four_adjacent_occupied_seats(const seating_chart& seating_chart, size_t x, size_t y)
+bool can_see_occupied_seat(const seating_chart& seating_chart, const size_t cx, const size_t cy)
+{
+    auto x{ cx }; // cx and cy are constant function parameters for safety
+    auto y{ cy }; // x and y are reset after checking in a particular direction
+
+    while (x > 0 && y > 0) // Northwest
+    {
+        if (seating_chart[y - 1][x - 1] == '#') return true;
+        if (seating_chart[y - 1][x - 1] == 'L') break;
+        --x; --y;
+    }
+    x = cx; y = cy;
+
+    while (y > 0) // North
+    {
+        if (seating_chart[y - 1][x] == '#') return true;
+        if (seating_chart[y - 1][x] == 'L') break;
+        --y;
+    }
+    x = cx; y = cy;
+
+    while (x < seating_chart.front().size() && y > 0) // Northeast
+    {
+        if (seating_chart[y - 1][x + 1] == '#') return true;
+        if (seating_chart[y - 1][x + 1] == 'L') break;
+        ++x; --y;
+    }
+    x = cx; y = cy;
+
+    while (x < seating_chart.front().size()) // East
+    {
+        if (seating_chart[y][x + 1] == '#') return true;
+        if (seating_chart[y][x + 1] == 'L') break;
+        ++x;
+    }
+    x = cx; y = cy;
+
+    while (x < seating_chart.front().size() && y < seating_chart.size() - 1) // Southeast
+    {
+        if (seating_chart[y + 1][x + 1] == '#') return true;
+        if (seating_chart[y + 1][x + 1] == 'L') break;
+        ++x; ++y;
+    }
+    x = cx; y = cy;
+
+    while (y < seating_chart.size() - 1) // South
+    {
+        if (seating_chart[y + 1][x] == '#') return true;
+        if (seating_chart[y + 1][x] == 'L') break;
+        ++y;
+    }
+    x = cx; y = cy;
+
+    while (x > 0 && y < seating_chart.size() - 1) // Southwest
+    {
+        if (seating_chart[y + 1][x - 1] == '#') return true;
+        if (seating_chart[y + 1][x - 1] == 'L') break;
+        --x; ++y;
+    }
+    x = cx; y = cy;
+
+    while (x > 0) // West
+    {
+        if (seating_chart[y][x - 1] == '#') return true;
+        if (seating_chart[y][x - 1] == 'L') break;
+        --x;
+    }
+
+    return false;
+}
+
+bool has_four_plus_adjacent_occupied_seats(const seating_chart& seating_chart, const size_t x, const size_t y)
 {
     int adjacent_occupied_seats{ 0 };
     if (x > 0 && y > 0 && seating_chart[y - 1][x - 1] == '#') ++adjacent_occupied_seats;
@@ -47,9 +119,118 @@ bool has_four_adjacent_occupied_seats(const seating_chart& seating_chart, size_t
     return adjacent_occupied_seats >= 4 ? true : false;
 }
 
-std::tuple<seating_chart, bool> process_seating_chart(const seating_chart& original_seating_chart)
+bool can_see_five_plus_occupied_seats(const seating_chart& seating_chart, const size_t cx, const size_t cy)
 {
-    struct return_values { seating_chart new_seating_chart; bool seating_chart_changed; };
+    int visible_occupied_seats{ 0 };
+    auto x{ cx }; // cx and cy are constant function parameters for safety
+    auto y{ cy }; // x and y are reset after checking in a particular direction
+
+    while (x > 0 && y > 0) // Northwest
+    {
+        if (seating_chart[y - 1][x - 1] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y - 1][x - 1] == 'L') break;
+        --x; --y;
+    }
+    x = cx; y = cy;
+
+    while (y > 0) // North
+    {
+        if (seating_chart[y - 1][x] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y - 1][x] == 'L') break;
+        --y;
+    }
+    x = cx; y = cy;
+
+    while (x < seating_chart.front().size() && y > 0) // Northeast
+    {
+        if (seating_chart[y - 1][x + 1] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y - 1][x + 1] == 'L') break;
+        ++x; --y;
+    }
+    x = cx; y = cy;
+
+    while (x < seating_chart.front().size()) // East
+    {
+        if (seating_chart[y][x + 1] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y][x + 1] == 'L') break;
+        ++x;
+    }
+    x = cx; y = cy;
+
+    while (x < seating_chart.front().size() && y < seating_chart.size() - 1) // Southeast
+    {
+        if (seating_chart[y + 1][x + 1] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y + 1][x + 1] == 'L') break;
+        ++x; ++y;
+    }
+    x = cx; y = cy;
+
+    while (y < seating_chart.size() - 1) // South
+    {
+        if (seating_chart[y + 1][x] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y + 1][x] == 'L') break;
+        ++y;
+    }
+    x = cx; y = cy;
+
+    while (x > 0 && y < seating_chart.size() - 1) // Southwest
+    {
+        if (seating_chart[y + 1][x - 1] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y + 1][x - 1] == 'L') break;
+        --x; ++y;
+    }
+    x = cx; y = cy;
+
+    while (x > 0) // West
+    {
+        if (seating_chart[y][x - 1] == '#')
+        {
+            ++visible_occupied_seats;
+            break;
+        }
+        if (seating_chart[y][x - 1] == 'L') break;
+        --x;
+    }
+
+    return visible_occupied_seats >= 5 ? true : false;
+}
+
+std::tuple<seating_chart, bool> process_seating_chart(bool part1, const seating_chart& original_seating_chart)
+{
+    // Choose func1 and func2 depending on if part1 or part2 of the problem is being computed
+    std::function<bool(const seating_chart&, const size_t, const size_t)> func1;
+    func1 = part1 ? has_adjacent_occupied_seats : can_see_occupied_seat;
+    std::function<bool(const seating_chart&, const size_t, const size_t)> func2;
+    func2 = part1 ? has_four_plus_adjacent_occupied_seats : can_see_five_plus_occupied_seats;
+
     bool seating_chart_changed{ false };
     seating_chart new_seating_chart;
     for (size_t y{ 0 }; y < original_seating_chart.size(); ++y)
@@ -63,9 +244,7 @@ std::tuple<seating_chart, bool> process_seating_chart(const seating_chart& origi
                 ss << '.';
                 break;
             case 'L':
-                // "If a seat is empty (L) and there are no occupied seats adjacent
-                // to it, the seat becomes occupied."
-                if (!has_adjacent_unoccupied_seats(original_seating_chart, x, y))
+                if (!func1(original_seating_chart, x, y))
                 {
                     seating_chart_changed = true;
                     ss << '#';
@@ -76,9 +255,7 @@ std::tuple<seating_chart, bool> process_seating_chart(const seating_chart& origi
                 }
                 break;
             case '#':
-                // "If a seat is occupied (#) and four or more seats adjacent to it
-                // are also occupied, the seat becomes empty."
-                if (has_four_adjacent_occupied_seats(original_seating_chart, x, y))
+                if (func2(original_seating_chart, x, y))
                 {
                     seating_chart_changed = true;
                     ss << 'L';
@@ -111,11 +288,11 @@ int count_occupied_seats(const seating_chart& seating_chart)
     return occupied_seats;
 }
 
-int part1(seating_chart& seating_chart)
+int part1_and_2(bool part1, seating_chart& seating_chart)
 {
     bool changed{ false };
     do {
-        auto [new_seating_chart, seating_chart_changed] = process_seating_chart(seating_chart);
+        auto [new_seating_chart, seating_chart_changed] = process_seating_chart(part1, seating_chart);
         seating_chart = new_seating_chart;
         changed = seating_chart_changed;
     } while (changed);
