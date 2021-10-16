@@ -2,4 +2,4 @@
 
 #include <vector>
 
-int part1(const std::vector<int>&);
+int play_game(int, const std::vector<int>&);
