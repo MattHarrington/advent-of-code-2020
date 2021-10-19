@@ -10,8 +10,8 @@ add_library(day15-core lib.cpp ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(day15-core PUBLIC ../include)
 
-# All users of this library will need at least C++17
-target_compile_features(day15-core PUBLIC cxx_std_17)
+# All users of this library will need at least C++20
+target_compile_features(day15-core PUBLIC cxx_std_20)
 
 # Increase warnings
 if(MSVC)
