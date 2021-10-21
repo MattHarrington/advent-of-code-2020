@@ -7,16 +7,16 @@
 
 struct TicketRule
 {
-	std::string name;
-	int first_seat_left;
-	int last_seat_left;
-	int first_seat_right;
-	int last_seat_right;
+    std::string name;
+    int first_seat_left;
+    int last_seat_left;
+    int first_seat_right;
+    int last_seat_right;
 };
 
 struct Ticket
 {
-	std::vector<int> fields;
+    std::vector<int> fields;
 };
 
 std::tuple<std::vector<TicketRule>, Ticket, std::vector<Ticket>> read_input(const std::string&);
