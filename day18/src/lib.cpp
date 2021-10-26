@@ -7,7 +7,7 @@
 
 std::vector<std::queue<Token>> read_input(const std::string& filename)
 {
-    std::vector<std::queue<Token>> output;
+    std::vector<std::queue<Token>> problems;
     std::fstream in{ filename };
     if (!in.is_open()) throw std::runtime_error("Could not open file");
 
@@ -15,7 +15,7 @@ std::vector<std::queue<Token>> read_input(const std::string& filename)
 
     while (getline(in, line))
     {
-        std::queue<Token> q;
+        std::queue<Token> problem;
         for (const char c : line)
         {
             switch (c)
@@ -30,19 +30,19 @@ std::vector<std::queue<Token>> read_input(const std::string& filename)
             case '7':
             case '8':
             case '9':
-                q.push(static_cast<Token>(c - '0')); // Casts '1' to Token::one, etc.
+                problem.push(static_cast<Token>(c - '0')); // Casts '1' to Token::one, etc.
                 break;
             case '+':
-                q.push(Token::plus);
+                problem.push(Token::plus);
                 break;
             case '*':
-                q.push(Token::times);
+                problem.push(Token::times);
                 break;
             case '(':
-                q.push(Token::left_parens);
+                problem.push(Token::left_parens);
                 break;
             case ')':
-                q.push(Token::right_parens);
+                problem.push(Token::right_parens);
                 break;
             case ' ':
                 break;
@@ -50,31 +50,34 @@ std::vector<std::queue<Token>> read_input(const std::string& filename)
                 throw std::runtime_error("Bad token");
             }
         }
-        output.emplace_back(q);
+        problems.emplace_back(problem);
     }
-    return output;
+    return problems;
 }
 
-long long process_queue(std::queue<Token>& q)
+long long process_queue(std::queue<Token>& problem, const Part& part)
 {
-    auto acc{ 0LL };
-    if (q.front() == Token::left_parens)
+    auto accumulator{ 0LL };
+
+    // Handle start of queue
+    if (problem.front() == Token::left_parens)
     {
-        q.pop();
-        acc = process_queue(q);
+        problem.pop();
+        accumulator = process_queue(problem, part);
     }
     else
     {
-        acc = static_cast<long long>(q.front());
-        q.pop();
+        accumulator = static_cast<long long>(problem.front());
+        problem.pop();
     }
 
     Token previous_token{ Token::none }; // At start of expression, there is no previous token
 
-    while (!q.empty())
+    // Process rest of queue
+    while (!problem.empty())
     {
-        Token token{ q.front() };
-        q.pop();
+        Token token{ problem.front() };
+        problem.pop();
         switch (token)
         {
         case Token::plus:
@@ -82,9 +85,16 @@ long long process_queue(std::queue<Token>& q)
             break;
         case Token::times:
             previous_token = Token::times;
+            if (part == Part::two)
+            {
+                // Multiplication has lower precedence than addition in part 2
+                token = static_cast<Token>(process_queue(problem, part)); // A little tricky since token can now be greater than Token enum values
+                accumulator *= static_cast<long long>(token);
+                return accumulator;
+            }
             break;
         case Token::left_parens:
-            token = static_cast<Token>(process_queue(q));
+            token = static_cast<Token>(process_queue(problem, part)); // A little tricky since token can now be greater than Token enum values
             [[fallthrough]];
         case Token::one:
         case Token::two:
@@ -97,29 +107,28 @@ long long process_queue(std::queue<Token>& q)
         case Token::nine:
             if (previous_token == Token::plus)
             {
-                acc += static_cast<long long>(token);
+                accumulator += static_cast<long long>(token);
             }
             else if (previous_token == Token::times)
             {
-                acc *= static_cast<long long>(token);
+                accumulator *= static_cast<long long>(token);
             }
             break;
         case Token::right_parens:
-            return acc;
-            break;
+            return accumulator;
         default:
             throw std::runtime_error("Bad token");
         }
     }
-    return acc;
+    return accumulator;
 }
 
-long long part1(std::vector<std::queue <Token>> input)
+long long solve_part(std::vector<std::queue <Token>> problems, const Part& part)
 {
     std::vector<long long> results;
-    for (auto expression : input)
+    for (auto problem : problems)
     {
-        results.push_back(process_queue(expression));
+        results.push_back(process_queue(problem, part));
     }
     return std::accumulate(results.cbegin(), results.cend(), 0LL);
 }

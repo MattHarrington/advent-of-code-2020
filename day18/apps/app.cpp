@@ -5,15 +5,15 @@
 
 int main()
 {
-    const auto puzzle_input{ read_input("day18_input.txt") };
+    auto puzzle_input{ read_input("day18_input.txt") };
 
-    const auto part1_answer{ part1(puzzle_input) };
+    const auto part1_answer{ solve_part(puzzle_input, Part::one) };
     fmt::print("Part 1 answer: {}\n", part1_answer);
-    assert(part1_answer == 401);
+    assert(part1_answer == 1'402'255'785'165);
 
-    //const auto part2_answer{ part2(puzzle_input) };
-    //fmt::print("Part 2 answer: {}\n", part2_answer);
-    //assert(part2_answer == 2224);
+    const auto part2_answer{ solve_part(puzzle_input, Part::two) };
+    fmt::print("Part 2 answer: {}\n", part2_answer);
+    assert(part2_answer == 119'224'703'255'966);
 
     return 0;
 }
