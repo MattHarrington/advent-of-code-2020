@@ -30,7 +30,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
 endif()
 
-find_package(Boost REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 
 # The compiled library code is here
