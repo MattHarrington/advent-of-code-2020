@@ -1,0 +1,18 @@
+IF (WIN32)
+    configure_file(day19_sample_input.txt day19_sample_input.txt NEWLINE_STYLE WIN32)
+    configure_file(day19_input.txt day19_input.txt NEWLINE_STYLE WIN32)
+ELSE()
+    configure_file(day19_sample_input.txt day19_sample_input.txt NEWLINE_STYLE UNIX)
+    configure_file(day19_input.txt day19_input.txt NEWLINE_STYLE UNIX)
+ENDIF()
+
+add_executable(day19 app.cpp)
+target_compile_features(day19 PRIVATE cxx_std_20)
+
+target_link_libraries(day19 PRIVATE day19-core fmt::fmt)
+
+if(MSVC)
+    target_compile_options(day19 PRIVATE /W4 /WX)
+else()
+    target_compile_options(day19 PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
