@@ -120,10 +120,11 @@ long long process_queue(std::queue<Token>& problem, const Part& part)
             throw std::runtime_error("Bad token");
         }
     }
+
     return accumulator;
 }
 
-long long solve_part(std::vector<std::queue <Token>> problems, const Part& part)
+long long solve_part(const std::vector<std::queue <Token>>& problems, const Part& part)
 {
     std::vector<long long> results;
     for (auto problem : problems)

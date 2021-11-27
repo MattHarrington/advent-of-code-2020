@@ -16,4 +16,4 @@ enum class Token : long long
 
 std::vector<std::queue<Token>> read_input(const std::string&);
 
-long long solve_part(std::vector<std::queue <Token>>, const Part&);
+long long solve_part(const std::vector<std::queue<Token>>&, const Part&);

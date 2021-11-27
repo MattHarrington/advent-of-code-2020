@@ -7,7 +7,7 @@ ELSE()
 ENDIF()
 
 add_executable(day18 app.cpp)
-target_compile_features(day18 PRIVATE cxx_std_17)
+target_compile_features(day18 PRIVATE cxx_std_20)
 
 target_link_libraries(day18 PRIVATE day18-core fmt::fmt)
 
