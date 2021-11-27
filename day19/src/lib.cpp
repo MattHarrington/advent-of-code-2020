@@ -35,7 +35,7 @@ std::pair<std::map<int, std::string>, std::vector <std::string>> read_input(cons
     return std::make_pair(rules, messages);
 }
 
-std::regex get_regex_from_rules(std::map<int, std::string> rules)
+std::regex get_regex_from_rules(std::map<int, std::string> rules, const Part& part)
 {
     std::string s{ rules[0] };
     const std::regex num_regex{ R"((\s*\d+\s*))" };
@@ -43,13 +43,25 @@ std::regex get_regex_from_rules(std::map<int, std::string> rules)
     while (std::regex_search(s, sm, num_regex))
     {
         auto pos{ s.find(sm[1]) };
+        if (part == Part::two)
+        {
+            if (sm[1] == "8 ")
+            {
+                s.replace(pos, sm[1].length(), R"((?:42)+)");
+                continue;
+            }
+            else if (sm[1] == "11")
+            {
+                s.replace(pos, sm[1].length(), R"((?:42(?:42(?:42(?:42(?:42(?:42(?:42(?:42(?:42 31)*31)*31)*31)*31)*31)*31)*31)*31))");
+                continue;
+            }
+        }
         s.replace(pos, sm[1].length(), "(?:" + rules[std::stoi(sm[1])] + ")");
     }
-
-    return std::regex{ "^" + s + "$"};
+    return std::regex{ "^" + s + "$" };
 }
 
-int part1(const std::vector<std::string>& messages, const std::regex& r)
+int count_matches(const std::vector<std::string>& messages, const std::regex& r)
 {
     int matches{ 0 };
     for (const auto& message : messages)
